@@ -8,16 +8,16 @@ import Link from "next/link";
 
 const slides = [
   {
-    image: "/assets/ganesha/clay-ganesha-brown.png",
+    image: "/assets/ganesha/clay-terracotta.png",
     tag: "Handcrafted Clay",
     title: "Mitti Se Bana, Prakriti Ko Wapas",
     subtitle:
       "Pure terracotta Ganesha idols — no chemicals, no pollution, only devotion and seeds of life.",
-    cta: "Shop Collection",
-    href: "/#products",
+    cta: "See Gallery",
+    href: "/#gallery",
   },
   {
-    image: "/assets/ganesha/clay-ganesha-grey.png",
+    image: "/assets/ganesha/clay-natural.png",
     tag: "Shadu Mati",
     title: "Traditional Craft, Modern Responsibility",
     subtitle:
@@ -26,7 +26,7 @@ const slides = [
     href: "/#story",
   },
   {
-    image: "/assets/ganesha/banner-mountains.png",
+    image: "/assets/ganesha/rainy-garden.png",
     tag: "Eco Visarjan",
     title: "Celebrate Festivals Without Harming Rivers",
     subtitle:
@@ -35,11 +35,11 @@ const slides = [
     href: "/#how-it-works",
   },
   {
-    image: "/assets/ganesha/banner-spiritual.png",
+    image: "/assets/ganesha/sunset-spiritual.png",
     tag: "Soil & Soul",
     title: "Devotion That Gives Back to Earth",
     subtitle:
-      "Join thousands of families celebrating Ganesh Chaturthi the eco-friendly way.",
+      "Join the movement celebrating Ganesh Chaturthi the eco-friendly way.",
     cta: "Get in Touch",
     href: "/contact",
   },
@@ -79,7 +79,6 @@ export function BannerSlider() {
             transition={{ duration: 0.7, ease: "easeInOut" }}
             className="absolute inset-0"
           >
-            {/* Background image */}
             <div className="absolute inset-0">
               <Image
                 src={slide.image}
@@ -93,7 +92,6 @@ export function BannerSlider() {
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--section-alt)]/60 via-transparent to-transparent" />
             </div>
 
-            {/* Content */}
             <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
               <div className="max-w-xl">
                 <motion.span
@@ -137,7 +135,6 @@ export function BannerSlider() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Nav arrows */}
         <button
           onClick={prev}
           className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center text-white hover:bg-white/30 transition-colors"
@@ -153,7 +150,6 @@ export function BannerSlider() {
           <ChevronRight size={22} />
         </button>
 
-        {/* Dots */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
           {slides.map((_, i) => (
             <button

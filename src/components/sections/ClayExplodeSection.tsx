@@ -8,7 +8,7 @@ export function ClayExplodeSection() {
   return (
     <section
       id="clay-magic"
-      className="section-padding bg-[var(--background)] overflow-hidden"
+      className="section-padding bg-[var(--bg-white)] overflow-hidden"
     >
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         <motion.div
@@ -18,7 +18,7 @@ export function ClayExplodeSection() {
           transition={{ duration: 0.7 }}
           className="order-2 lg:order-1"
         >
-          <ExplodedClayGanesha imageSrc="/assets/ganesha/scenes/final.png" />
+          <ExplodedClayGanesha imageSrc="/assets/ganesha/clay-natural.png" />
         </motion.div>
 
         <motion.div
@@ -61,8 +61,8 @@ export function ClayExplodeSection() {
             ))}
           </ul>
 
-          <Link href="/#products" className="btn-primary">
-            Explore Idols
+          <Link href="/#gallery" className="btn-primary">
+            View Gallery
           </Link>
         </motion.div>
       </div>

@@ -10,8 +10,8 @@
   --color-maroon-400: #e85d75;
   --color-maroon-500: #d42d4f;
   --color-maroon-600: #b81e3d;
-  --color-maroon-700: #8b1538;
-  --color-maroon-800: #6b1230;
+  --color-maroon-700: #158b1694;
+  --color-maroon-800: #6ea86c;
   --color-maroon-900: #4a0d22;
   --color-maroon-950: #2a0612;
 
@@ -21,31 +21,33 @@
   --color-cream-300: #f8e4cc;
 
   --color-gold-400: #d4a843;
-  --color-gold-500: #c9a227;
+  --color-gold-500: #fff;
 
   --font-serif: "Playfair Display", Georgia, serif;
   --font-sans: "Montserrat", system-ui, sans-serif;
 }
 
 :root {
+  --bg-white:#fff;
   --background: #fffdf9;
   --foreground: #1a1a1a;
   --card: #ffffff;
   --card-foreground: #1a1a1a;
-  --primary: #8b1538;
+  --primary: #158b1694;
   --primary-foreground: #ffffff;
   --secondary: #fdf2f4;
-  --secondary-foreground: #6b1230;
+  --secondary-foreground: #6ea86c;
   --muted: #f5f0eb;
   --muted-foreground: #6b6b6b;
-  --accent: #c9a227;
+  --accent: #fff;
   --accent-foreground: #1a1a1a;
   --border: #e8ddd4;
-  --section-alt: #8b1538;
+  --section-alt: #158b1694;
   --section-alt-fg: #ffffff;
 }
 
 .dark {
+  --bg-white: #fffdf9;
   --background: #1a0a0f;
   --foreground: #f5f0eb;
   --card: #2a0612;
@@ -59,7 +61,7 @@
   --accent: #d4a843;
   --accent-foreground: #1a0a0f;
   --border: #4a0d22;
-  --section-alt: #6b1230;
+  --section-alt: #6ea86c;
   --section-alt-fg: #ffffff;
 }
 

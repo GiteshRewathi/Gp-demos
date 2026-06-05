@@ -7,6 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const IDOL_SRC = "/assets/ganesha/ganesha-transparent.png";
+const PLANT_SRC = "/assets/ganesha/plant-transparent.png";
+
 interface RainDrop {
   x: number;
   y: number;
@@ -14,400 +17,316 @@ interface RainDrop {
   speed: number;
   opacity: number;
   wind: number;
-  thickness: number;
 }
 
-interface MudParticle {
+interface Drip {
   x: number;
   y: number;
-  vx: number;
   vy: number;
   size: number;
   life: number;
-  maxLife: number;
 }
 
-const STORY_PANELS = [
-  {
-    id: "craft-1",
-    step: "01",
-    tag: "Handmade",
-    title: "Mitti se shuru",
-    subtitle: "Artisan haath se pehla shape banati hai",
-    image: "/assets/ganesha/scenes/crafting-1.png",
-    accent: "#f9a8d4",
-  },
-  {
-    id: "craft-2",
-    step: "02",
-    tag: "Shaping",
-    title: "Haath se form",
-    subtitle: "Dheere dheere Ganesh ji ka roop aata hai",
-    image: "/assets/ganesha/scenes/crafting-2.png",
-    accent: "#c4b5fd",
-  },
-  {
-    id: "craft-3",
-    step: "03",
-    tag: "Carving",
-    title: "Fine details",
-    subtitle: "Har line, har curve — sirf haath se",
-    image: "/assets/ganesha/scenes/crafting-3.png",
-    accent: "#fdba74",
-  },
-  {
-    id: "complete",
-    step: "04",
-    tag: "Complete",
-    title: "Ganesh ji poora",
-    subtitle: "Handmade clay idol taiyaar hai",
-    image: "/assets/ganesha/scenes/final.png",
-    accent: "#fde68a",
-  },
-  {
-    id: "dissolve",
-    step: "05",
-    tag: "Visarjan",
-    title: "Barish aati hai",
-    subtitle: "Dheere dheere mitti mein mil jati hai",
-    image: "/assets/ganesha/scenes/final.png",
-    accent: "#93c5fd",
-    dissolve: true,
-  },
-  {
-    id: "plant",
-    step: "06",
-    tag: "Rebirth",
-    title: "Nayi zindagi",
-    subtitle: "Usi jagah se plant ugta hai aur bada hota hai",
-    image: "/assets/ganesha/plant-sprout.png",
-    accent: "#86efac",
-    plant: true,
-  },
-] as const;
+const smooth = (t: number) => t * t * (3 - 2 * t);
 
 export function ScrollAnimation() {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const pinRef = useRef<HTMLDivElement>(null);
+  const idolRef = useRef<HTMLDivElement>(null);
+  const idolImgRef = useRef<HTMLImageElement>(null);
+  const meltCanvasRef = useRef<HTMLCanvasElement>(null);
+  const plantRef = useRef<HTMLDivElement>(null);
+  const rainCanvasRef = useRef<HTMLCanvasElement>(null);
+
   const progressRef = useRef(0);
   const rainRef = useRef<RainDrop[]>([]);
-  const mudRef = useRef<MudParticle[]>([]);
+  const dripsRef = useRef<Drip[]>([]);
   const frameRef = useRef(0);
-  const idolZoneRef = useRef({ cx: 0, baseY: 0 });
+  const idolRectRef = useRef({ cx: 0, top: 0, bottom: 0, w: 0 });
 
-  const [activeStep, setActiveStep] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const track = trackRef.current;
-    const canvas = canvasRef.current;
-    if (!wrapper || !track || !canvas) return;
+    const section = sectionRef.current;
+    const pin = pinRef.current;
+    const idol = idolRef.current;
+    const idolImg = idolImgRef.current;
+    const meltCanvas = meltCanvasRef.current;
+    const plant = plantRef.current;
+    const rainCanvas = rainCanvasRef.current;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!section || !pin || !idol || !idolImg || !meltCanvas || !plant || !rainCanvas) return;
+
+    const meltCtx = meltCanvas.getContext("2d");
+    const rainCtx = rainCanvas.getContext("2d");
+    if (!meltCtx || !rainCtx) return;
 
     let animId = 0;
-    let horizontalTween: gsap.core.Tween | null = null;
 
-    const resize = () => {
+    const updateRects = () => {
       const dpr = Math.min(window.devicePixelRatio, 2);
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      idolZoneRef.current = {
-        cx: rect.width / 2,
-        baseY: rect.height * 0.62,
+      const rainRect = rainCanvas.getBoundingClientRect();
+      const idolBox = idol.getBoundingClientRect();
+      const pinRect = pin.getBoundingClientRect();
+
+      rainCanvas.width = rainRect.width * dpr;
+      rainCanvas.height = rainRect.height * dpr;
+      rainCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      meltCanvas.width = idolBox.width * dpr;
+      meltCanvas.height = idolBox.height * dpr;
+      meltCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      idolRectRef.current = {
+        cx: idolBox.left - pinRect.left + idolBox.width / 2,
+        top: idolBox.top - pinRect.top,
+        bottom: idolBox.bottom - pinRect.top,
+        w: idolBox.width,
       };
     };
 
-    const spawnRain = (w: number, intensity: number) => {
-      const n = Math.floor(3 + intensity * 16);
-      for (let i = 0; i < n; i++) {
+    /** Pure section par start se dikhe — kam → thodi zyada → scroll ke end par bhari */
+    const getRainIntensity = (p: number) => {
+      const t = Math.max(0, Math.min(1, p));
+      return 0.22 + Math.pow(t, 1.45) * 0.78;
+    };
+
+    const spawnRain = (w: number, h: number, intensity: number) => {
+      const spawnEvery = Math.max(2, Math.floor(16 - intensity * 13));
+      if (frameRef.current % spawnEvery !== 0) return;
+
+      const count = Math.floor(3 + intensity * intensity * 34);
+      for (let i = 0; i < count; i++) {
         rainRef.current.push({
           x: Math.random() * w,
-          y: -30 - Math.random() * 100,
-          length: 14 + Math.random() * 28 * intensity,
-          speed: 10 + Math.random() * 14 * intensity,
-          opacity: 0.12 + Math.random() * 0.5 * intensity,
-          wind: -0.9 + Math.random() * 0.7,
-          thickness: 0.8 + Math.random() * 1.2,
+          y: -10 - Math.random() * h * 0.2,
+          length: 10 + Math.random() * (12 + intensity * 32),
+          speed: 0.9 + Math.random() * (1.8 + intensity * 16),
+          opacity: 0.12 + Math.random() * (0.14 + intensity * 0.48),
+          wind: -0.14 + Math.random() * (0.18 + intensity * 0.55),
         });
       }
     };
 
-    const spawnMud = (cx: number, cy: number, n: number) => {
-      for (let i = 0; i < n; i++) {
-        mudRef.current.push({
-          x: cx + (Math.random() - 0.5) * 100,
-          y: cy + (Math.random() - 0.5) * 50,
-          vx: (Math.random() - 0.5) * 2,
-          vy: 0.4 + Math.random() * 2,
-          size: 2 + Math.random() * 6,
-          life: 0,
-          maxLife: 70 + Math.random() * 80,
-        });
-      }
+    const spawnDrip = (cx: number, top: number, bottom: number, intensity: number) => {
+      if (intensity < 0.06) return;
+      dripsRef.current.push({
+        x: cx + (Math.random() - 0.5) * idolRectRef.current.w * 0.7,
+        y: top + Math.random() * (bottom - top) * 0.5,
+        vy: 0.2 + Math.random() * (0.5 + intensity),
+        size: 1.5 + Math.random() * (2 + intensity * 4),
+        life: 0,
+      });
     };
 
-    const drawRain = (d: RainDrop) => {
-      const g = ctx.createLinearGradient(d.x, d.y, d.x + d.wind * 4, d.y + d.length);
-      g.addColorStop(0, "rgba(200,225,255,0)");
-      g.addColorStop(0.2, `rgba(190,220,255,${d.opacity})`);
-      g.addColorStop(1, `rgba(140,190,240,${d.opacity * 0.5})`);
-      ctx.strokeStyle = g;
-      ctx.lineWidth = d.thickness;
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(d.x, d.y);
-      ctx.lineTo(d.x + d.wind * 4, d.y + d.length);
-      ctx.stroke();
+    const drawMeltOverlay = (melt: number) => {
+      const w = meltCanvas.width / Math.min(window.devicePixelRatio, 2);
+      const h = meltCanvas.height / Math.min(window.devicePixelRatio, 2);
+      meltCtx.clearRect(0, 0, w, h);
+      if (melt < 0.02) return;
+
+      const meltLine = h * (1 - melt * 0.92);
+      const grd = meltCtx.createLinearGradient(0, meltLine - 40, 0, h);
+      grd.addColorStop(0, "rgba(90,58,32,0)");
+      grd.addColorStop(0.4, `rgba(100,65,38,${melt * 0.5})`);
+      grd.addColorStop(1, `rgba(75,48,28,${melt * 0.85})`);
+      meltCtx.fillStyle = grd;
+      meltCtx.fillRect(0, meltLine - 20, w, h - meltLine + 40);
     };
 
     const draw = () => {
-      const rect = canvas.getBoundingClientRect();
-      const w = rect.width;
-      const h = rect.height;
+      const rainRect = rainCanvas.getBoundingClientRect();
+      const w = rainRect.width;
+      const h = rainRect.height;
       const p = progressRef.current;
-      const rainIntensity = Math.max(0, Math.min(1, (p - 0.55) / 0.45));
-      const dissolveIntensity = Math.max(0, Math.min(1, (p - 0.62) / 0.2));
-      const zone = idolZoneRef.current;
+      const rainIntensity = getRainIntensity(p);
+      const meltIntensity = Math.max(0, Math.min(1, (p - 0.78) / 0.28));
+      const zone = idolRectRef.current;
 
-      ctx.clearRect(0, 0, w, h);
+      rainCtx.clearRect(0, 0, w, h);
+      spawnRain(w, h, rainIntensity);
 
-      if (rainIntensity > 0.05 && frameRef.current % 2 === 0) {
-        spawnRain(w, rainIntensity * 0.8);
+      const maxDrops = Math.floor(35 + rainIntensity * 320);
+      if (rainRef.current.length > maxDrops) {
+        rainRef.current.splice(0, rainRef.current.length - maxDrops);
       }
 
-      if (dissolveIntensity > 0.3 && frameRef.current % 4 === 0) {
-        spawnMud(zone.cx, zone.baseY - 20, 1 + Math.floor(dissolveIntensity * 2));
+      if (meltIntensity > 0.08 && frameRef.current % 12 === 0) {
+        spawnDrip(zone.cx, zone.top, zone.bottom, meltIntensity);
+      }
+
+      if (rainIntensity > 0.2) {
+        rainCtx.fillStyle = `rgba(170,200,235,${(rainIntensity - 0.18) * 0.035})`;
+        rainCtx.fillRect(0, 0, w, h);
+      }
+      if (rainIntensity > 0.55) {
+        rainCtx.fillStyle = `rgba(120,160,210,${(rainIntensity - 0.5) * 0.09})`;
+        rainCtx.fillRect(0, 0, w, h);
+      }
+      if (rainIntensity > 0.82) {
+        rainCtx.fillStyle = `rgba(90,130,175,${(rainIntensity - 0.78) * 0.1})`;
+        rainCtx.fillRect(0, 0, w, h);
       }
 
       rainRef.current = rainRef.current.filter((d) => {
         d.y += d.speed;
         d.x += d.wind;
         if (d.y < h + 40) {
-          drawRain(d);
+          const g = rainCtx.createLinearGradient(d.x, d.y, d.x + d.wind * 2, d.y + d.length);
+          g.addColorStop(0, "rgba(200,225,255,0)");
+          g.addColorStop(0.3, `rgba(190,220,255,${d.opacity})`);
+          g.addColorStop(1, `rgba(140,190,240,${d.opacity * 0.35})`);
+          rainCtx.strokeStyle = g;
+          rainCtx.lineWidth = 0.8 + rainIntensity * 1.3;
+          rainCtx.lineCap = "round";
+          rainCtx.beginPath();
+          rainCtx.moveTo(d.x, d.y);
+          rainCtx.lineTo(d.x + d.wind * 2, d.y + d.length);
+          rainCtx.stroke();
           return true;
         }
         return false;
       });
 
-      mudRef.current = mudRef.current.filter((m) => {
-        m.life++;
-        m.x += m.vx;
-        m.y += m.vy;
-        m.vy += 0.04;
-        const a = 1 - m.life / m.maxLife;
-        if (m.life < m.maxLife) {
-          ctx.fillStyle = `rgba(100,65,38,${a * 0.7})`;
-          ctx.beginPath();
-          ctx.ellipse(m.x, m.y, m.size, m.size * 0.55, 0, 0, Math.PI * 2);
-          ctx.fill();
+      dripsRef.current = dripsRef.current.filter((d) => {
+        d.life++;
+        d.y += d.vy;
+        if (d.life < 90) {
+          rainCtx.fillStyle = `rgba(95,60,35,${0.4 - d.life / 200})`;
+          rainCtx.beginPath();
+          rainCtx.ellipse(d.x, d.y, d.size, d.size * 1.4, 0, 0, Math.PI * 2);
+          rainCtx.fill();
           return true;
         }
         return false;
       });
 
+      drawMeltOverlay(meltIntensity);
       frameRef.current++;
       animId = requestAnimationFrame(draw);
     };
 
-    const ctx_gsap = gsap.context(() => {
-      const panels = gsap.utils.toArray<HTMLElement>(".story-panel");
-      const getScrollDistance = () => track.scrollWidth - window.innerWidth;
+    const dropDistance = () => Math.min(window.innerHeight * 0.55, 420);
 
-      horizontalTween = gsap.to(track, {
-        x: () => -getScrollDistance(),
-        ease: "none",
+    gsap.set(idol, { y: -dropDistance(), opacity: 0, scale: 0.92 });
+    gsap.set(idolImg, { clipPath: "inset(0 0 0% 0)", filter: "brightness(1) saturate(1)" });
+    gsap.set(plant, { opacity: 0, scale: 0.15, y: 30 });
+
+    const ctx_gsap = gsap.context(() => {
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: wrapper,
-          pin: true,
-          scrub: 1,
+          trigger: section,
           start: "top top",
-          end: () => `+=${getScrollDistance()}`,
-          invalidateOnRefresh: true,
+          end: () => `+=${window.innerHeight * 8}`,
+          pin: pin,
+          scrub: 2.2,
           anticipatePin: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             progressRef.current = self.progress;
             setScrollProgress(self.progress);
-            const step = Math.min(
-              STORY_PANELS.length - 1,
-              Math.floor(self.progress * STORY_PANELS.length)
-            );
-            setActiveStep(step);
           },
         },
       });
 
-      panels.forEach((panel) => {
-        const tag = panel.querySelector(".panel-tag");
-        const title = panel.querySelector(".panel-title");
-        const subtitle = panel.querySelector(".panel-subtitle");
-        const visual = panel.querySelector(".panel-visual");
+      // Ganesh — bahut dheere, smooth fade + niche (ek dum pop nahi)
+      tl.to(idol, { y: -dropDistance() * 0.55, opacity: 0.08, duration: 0.18, ease: "power1.out" }, 0);
+      tl.to(idol, { y: -dropDistance() * 0.15, opacity: 0.45, duration: 0.22, ease: "power1.inOut" }, 0.14);
+      tl.to(idol, { y: 0, opacity: 1, scale: 1, duration: 0.42, ease: "power1.inOut" }, 0.32);
 
-        if (!tag || !title || !subtitle || !visual || !horizontalTween) return;
+      // Barish + pighalna — clay color preserve (Ganesh land hone ke baad)
+      tl.to(idolImg, { filter: "brightness(0.95) saturate(0.95)", duration: 0.08 }, 0.76);
+      tl.to(
+        idolImg,
+        { filter: "blur(2px) brightness(0.82) saturate(0.8)", clipPath: "inset(0 0 0% 0)", duration: 0.3, ease: "power1.inOut" },
+        0.82
+      );
+      tl.to(
+        idolImg,
+        { clipPath: "inset(0 0 88% 0)", duration: 0.3, ease: "none" },
+        0.84
+      );
+      tl.to(idol, { opacity: 0, duration: 0.12, ease: "power1.in" }, 0.92);
 
-        gsap.fromTo(
-          [tag, title, subtitle],
-          { x: 140, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            stagger: 0.08,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: panel,
-              containerAnimation: horizontalTween,
-              start: "left 85%",
-              end: "left 45%",
-              scrub: 0.6,
-            },
-          }
-        );
+      // Original plant image — transparent
+      tl.to(plant, { opacity: 1, scale: 0.35, y: 0, duration: 0.14, ease: "power2.out" }, 0.94);
+      tl.to(plant, { scale: 1, duration: 0.26, ease: "power1.out" }, 1.02);
+    }, section);
 
-        gsap.fromTo(
-          visual,
-          { x: 200, opacity: 0, scale: 0.88 },
-          {
-            x: 0,
-            opacity: 1,
-            scale: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: panel,
-              containerAnimation: horizontalTween,
-              start: "left 80%",
-              end: "left 35%",
-              scrub: 0.8,
-            },
-          }
-        );
-      });
-    }, wrapper);
-
-    resize();
+    updateRects();
     draw();
-    window.addEventListener("resize", () => {
-      resize();
+
+    const onResize = () => {
+      updateRects();
       ScrollTrigger.refresh();
-    });
+    };
+    window.addEventListener("resize", onResize);
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", onResize);
       ctx_gsap.revert();
     };
   }, []);
 
-  const dissolveAmount = Math.max(0, Math.min(1, (scrollProgress - 0.62) / 0.18));
-  const plantScale = 0.3 + Math.max(0, Math.min(1, (scrollProgress - 0.78) / 0.22)) * 0.85;
-
   return (
-    <div ref={wrapperRef} className="relative h-screen overflow-hidden">
-      {/* Fixed background — sunset */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/assets/ganesha/bg-sunset.png"
-          alt=""
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/60" />
-      </div>
-
-      {/* Horizontal track — scroll se right → left */}
-      <div ref={trackRef} className="relative z-10 flex h-full will-change-transform">
-        {STORY_PANELS.map((panel, i) => (
-          <div
-            key={panel.id}
-            className="story-panel relative flex h-full w-screen flex-shrink-0 items-center px-6 sm:px-12 lg:px-20"
-          >
-            <div className="mx-auto grid w-full max-w-6xl items-center gap-8 lg:grid-cols-2 lg:gap-16">
-              {/* Text — GSAP style pills */}
-              <div className="panel-content order-2 lg:order-1">
-                <span
-                  className="panel-tag inline-block rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-black"
-                  style={{ background: panel.accent }}
-                >
-                  {panel.tag}
-                </span>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.3em] text-white/50">
-                  Step {panel.step}
-                </p>
-                <h2 className="panel-title mt-2 font-serif text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-                  {panel.title}
-                </h2>
-                <p className="panel-subtitle mt-4 max-w-md text-base leading-relaxed text-white/70 sm:text-lg">
-                  {panel.subtitle}
-                </p>
-              </div>
-
-              {/* Visual */}
-              <div className="panel-visual order-1 flex justify-center lg:order-2">
-                <div
-                  className="relative w-[min(300px,78vw)] sm:w-[min(360px,70vw)]"
-                  style={
-                    "dissolve" in panel && panel.dissolve
-                      ? {
-                          filter: `blur(${dissolveAmount * 8}px)`,
-                          clipPath: `inset(0 0 ${dissolveAmount * 72}% 0)`,
-                          opacity: 1 - dissolveAmount * 0.9,
-                        }
-                      : "plant" in panel && panel.plant
-                        ? {
-                            transform: `scale(${plantScale})`,
-                            transformOrigin: "bottom center",
-                          }
-                        : undefined
-                  }
-                >
-                  <Image
-                    src={panel.image}
-                    alt={panel.title}
-                    width={720}
-                    height={720}
-                    className="h-auto w-full rounded-2xl shadow-2xl ring-1 ring-white/20"
-                    priority={i < 2}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Rain overlay — last panels */}
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none absolute inset-0 z-20 h-full w-full"
-        style={{ opacity: scrollProgress > 0.55 ? 1 : 0 }}
-      />
-
-      {/* Step dots — no scrollbar */}
-      <div className="absolute bottom-8 left-1/2 z-40 flex -translate-x-1/2 flex-col items-center gap-3 px-4">
-        <div className="flex gap-2">
-          {STORY_PANELS.map((panel, i) => (
-            <div
-              key={panel.id}
-              className="h-1.5 rounded-full transition-all duration-300"
-              style={{
-                width: i === activeStep ? 28 : 8,
-                background:
-                  i === activeStep
-                    ? STORY_PANELS[i].accent
-                    : "rgba(255,255,255,0.25)",
-              }}
-            />
-          ))}
+    <section ref={sectionRef} className="relative">
+      <div ref={pinRef} className="relative h-screen w-full overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/assets/ganesha/sunset-spiritual.png"
+            alt=""
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50" />
         </div>
-        <p className="text-xs tracking-widest text-white/50">
-          Scroll ↓ — panels right se left ↙
-        </p>
+
+        {/* Mountain peak par — center-bottom */}
+        <div className="absolute inset-0 z-10 pointer-events-none">
+          <div
+            ref={idolRef}
+            className="absolute left-1/2 w-[min(140px,32vw)] sm:w-[min(700px,28vw)] -translate-x-1/2"
+            style={{ bottom: "34vh", opacity: 0 }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={idolImgRef}
+              src={IDOL_SRC}
+              alt="Handmade mitti ka Ganesh"
+              className="h-auto w-full drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]"
+              style={{ background: "transparent" }}
+              draggable={false}
+            />
+            <canvas
+              ref={meltCanvasRef}
+              className="absolute inset-0 h-full w-full pointer-events-none"
+            />
+          </div>
+
+          <div
+            ref={plantRef}
+            className="absolute left-1/2 w-[min(200px,46vw)] sm:w-[min(400px,40vw)] -translate-x-1/2 origin-bottom"
+            style={{ bottom: "32vh", opacity: 0 }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={PLANT_SRC}
+              alt="Plant growing"
+              className="h-auto w-full"
+              style={{ background: "transparent" }}
+              draggable={false}
+            />
+          </div>
+        </div>
+
+        <canvas
+          ref={rainCanvasRef}
+          className="pointer-events-none absolute inset-0 z-20 h-full w-full"
+          style={{ opacity: scrollProgress >= 0 ? 1 : 0 }}
+        />
       </div>
-    </div>
+    </section>
   );
 }

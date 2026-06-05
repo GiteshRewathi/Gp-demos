@@ -18,7 +18,7 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email Us",
-    details: ["hello@soilandsoul.in", "orders@soilandsoul.in"],
+    details: ["hello@soilandsoul.in", "info@soilandsoul.in"],
   },
   {
     icon: Clock,
@@ -51,9 +51,8 @@ export default function ContactPage() {
               We&apos;d Love to Hear From You
             </h1>
             <p className="text-[var(--muted-foreground)] max-w-2xl mx-auto leading-relaxed">
-              Have questions about our plantable idols, bulk orders for housing
-              societies, or partnership opportunities? Reach out and our team will
-              respond within 24 hours.
+              Questions about eco-friendly devotion, awareness campaigns, or
+              partnership? Reach out and our team will respond within 24 hours.
             </p>
           </motion.div>
         </div>
@@ -86,11 +85,11 @@ export default function ContactPage() {
             ))}
 
             <div className="card p-6 bg-[var(--section-alt)] text-[var(--section-alt-fg)]">
-              <h3 className="font-serif text-lg font-bold mb-2">Bulk Orders</h3>
+              <h3 className="font-serif text-lg font-bold mb-2">Awareness Campaign</h3>
               <p className="text-sm text-white/70 leading-relaxed">
-                Planning a community Ganesh Chaturthi celebration? We offer special
-                pricing for housing societies, schools, and corporate events.
-                Minimum order: 25 idols.
+                Soil & Soul is an advertisement and awareness initiative — not an
+                online store. Connect with us for community events, media, or
+                eco-friendly festival messaging.
               </p>
             </div>
           </motion.div>
@@ -164,8 +163,8 @@ export default function ContactPage() {
                         Inquiry Type
                       </label>
                       <select className="w-full px-4 py-3 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-shadow">
-                        <option>Individual Order</option>
-                        <option>Bulk / Society Order</option>
+                        <option>General Inquiry</option>
+                        <option>Community Awareness</option>
                         <option>Partnership</option>
                         <option>Media / Press</option>
                         <option>Other</option>
@@ -181,7 +180,7 @@ export default function ContactPage() {
                       required
                       rows={5}
                       className="w-full px-4 py-3 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-shadow resize-none"
-                      placeholder="Tell us about your requirements..."
+                      placeholder="Share your message..."
                     />
                   </div>
 

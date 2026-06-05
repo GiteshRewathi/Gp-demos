@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/#banner", label: "Gallery" },
   { href: "/#clay-magic", label: "Clay Magic" },
   { href: "/#story", label: "Our Story" },
-  { href: "/#products", label: "Products" },
+  { href: "/#message", label: "Our Message" },
   { href: "/#how-it-works", label: "How It Works" },
   { href: "/contact", label: "Contact" },
 ];

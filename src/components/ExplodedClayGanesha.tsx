@@ -18,7 +18,7 @@ const ease = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
 export function ExplodedClayGanesha({
-  imageSrc = "/assets/ganesha/scenes/final.png",
+  imageSrc = "/assets/ganesha/clay-natural.png",
 }: {
   imageSrc?: string;
 }) {
@@ -209,7 +209,7 @@ export function ExplodedClayGanesha({
     <div className="relative w-full flex flex-col items-center">
       <div
         ref={wrapRef}
-        className="relative cursor-pointer select-none rounded-2xl overflow-hidden shadow-2xl ring-1 ring-[var(--border)]"
+        className="relative cursor-pointer select-none rounded-2xl overflow-hidden "
         style={{ width: "100%", maxWidth: 440 }}
       >
         {!loaded && (

@@ -19,8 +19,8 @@ export function ContactCTA() {
             Ready to Celebrate Responsibly?
           </h2>
           <p className="section-subtitle mx-auto mb-8">
-            Whether you&apos;re ordering for your family, organizing a community
-            celebration, or looking to partner with us — we&apos;d love to hear from you.
+            Questions about eco-friendly devotion, community awareness, or
+            partnership — we&apos;d love to hear from you.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/contact" className="btn-primary">

@@ -14,7 +14,7 @@ export function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-2 gap-12 items-center">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 1, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
@@ -34,8 +34,8 @@ export function Hero() {
             way to celebrate Ganesh Chaturthi.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Link href="/#products" className="btn-primary">
-              Explore Collection
+            <Link href="/#gallery" className="btn-primary">
+              View Gallery
             </Link>
             <Link href="/#how-it-works" className="btn-outline">
               See How It Works
@@ -57,7 +57,7 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 1, scale: 1 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative hidden lg:block"

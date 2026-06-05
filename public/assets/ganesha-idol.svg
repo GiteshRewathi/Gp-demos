@@ -73,8 +73,8 @@
     <circle cx="180" cy="167" r="2" fill="#FFF8F0" opacity="0.6"/>
 
     <!-- Tilak -->
-    <path d="M160 148 L155 158 L165 158 Z" fill="#8B1538"/>
-    <circle cx="160" cy="155" r="3" fill="#8B1538"/>
+    <path d="M160 148 L155 158 L165 158 Z" fill="#158b1694"/>
+    <circle cx="160" cy="155" r="3" fill="#158b1694"/>
 
     <!-- Smile -->
     <path d="M148 188 Q160 198 172 188" stroke="#6B3E1F" stroke-width="2" fill="none" stroke-linecap="round"/>
