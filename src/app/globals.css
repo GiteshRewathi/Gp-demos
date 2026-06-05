@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-maroon-50: #fdf2f4;
+  --color-maroon-100: #fce4e8;
+  --color-maroon-200: #f9c8d0;
+  --color-maroon-300: #f29baa;
+  --color-maroon-400: #e85d75;
+  --color-maroon-500: #d42d4f;
+  --color-maroon-600: #b81e3d;
+  --color-maroon-700: #8b1538;
+  --color-maroon-800: #6b1230;
+  --color-maroon-900: #4a0d22;
+  --color-maroon-950: #2a0612;
+
+  --color-cream-50: #fffdf9;
+  --color-cream-100: #fff8f0;
+  --color-cream-200: #fdf0e0;
+  --color-cream-300: #f8e4cc;
+
+  --color-gold-400: #d4a843;
+  --color-gold-500: #c9a227;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Montserrat", system-ui, sans-serif;
+}
+
+:root {
+  --background: #fffdf9;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --primary: #8b1538;
+  --primary-foreground: #ffffff;
+  --secondary: #fdf2f4;
+  --secondary-foreground: #6b1230;
+  --muted: #f5f0eb;
+  --muted-foreground: #6b6b6b;
+  --accent: #c9a227;
+  --accent-foreground: #1a1a1a;
+  --border: #e8ddd4;
+  --section-alt: #8b1538;
+  --section-alt-fg: #ffffff;
+}
+
+.dark {
+  --background: #1a0a0f;
+  --foreground: #f5f0eb;
+  --card: #2a0612;
+  --card-foreground: #f5f0eb;
+  --primary: #d42d4f;
+  --primary-foreground: #ffffff;
+  --secondary: #4a0d22;
+  --secondary-foreground: #fce4e8;
+  --muted: #2a0612;
+  --muted-foreground: #b8a8a8;
+  --accent: #d4a843;
+  --accent-foreground: #1a0a0f;
+  --border: #4a0d22;
+  --section-alt: #6b1230;
+  --section-alt-fg: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.scroll-story-section {
+  scroll-snap-type: y proximity;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.section-padding {
+  padding: 5rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 6rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 7rem 3rem;
+  }
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: var(--color-maroon-800);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(139, 21, 56, 0.3);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: transparent;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  border-radius: 0.375rem;
+  border: 2px solid var(--primary);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--muted-foreground);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.leaf-decoration {
+  position: absolute;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(3deg);
+  }
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes sprinkle {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+}
+
+@keyframes grow {
+  0% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.scroll-indicator {
+  animation: float 2s ease-in-out infinite;
+}

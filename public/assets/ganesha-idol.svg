@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 420" fill="none">
+  <defs>
+    <radialGradient id="clayBody" cx="40%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#E8A86B"/>
+      <stop offset="45%" stop-color="#C4784A"/>
+      <stop offset="100%" stop-color="#8B5A2B"/>
+    </radialGradient>
+    <radialGradient id="clayHead" cx="45%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#E8A86B"/>
+      <stop offset="50%" stop-color="#C4784A"/>
+      <stop offset="100%" stop-color="#9A6030"/>
+    </radialGradient>
+    <radialGradient id="clayDark" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#A06030"/>
+      <stop offset="100%" stop-color="#6B3E1F"/>
+    </radialGradient>
+    <linearGradient id="crownGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4A843"/>
+      <stop offset="100%" stop-color="#9A7020"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#3E2723" flood-opacity="0.35"/>
+    </filter>
+    <filter id="clayTexture">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise"/>
+      <feDiffuseLighting in="noise" lighting-color="#C4784A" surfaceScale="1.5" result="light">
+        <feDistantLight azimuth="45" elevation="55"/>
+      </feDiffuseLighting>
+      <feBlend in="SourceGraphic" in2="light" mode="multiply"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <!-- Base / seat -->
+    <ellipse cx="160" cy="395" rx="90" ry="18" fill="#5C3D2E" opacity="0.5"/>
+    <path d="M90 360 Q160 340 230 360 L220 390 Q160 400 100 390 Z" fill="url(#clayDark)"/>
+
+    <!-- Body -->
+    <ellipse cx="160" cy="290" rx="72" ry="85" fill="url(#clayBody)"/>
+    <ellipse cx="160" cy="295" rx="55" ry="65" fill="url(#clayBody)" opacity="0.6"/>
+
+    <!-- Dhoti fold -->
+    <path d="M100 330 Q160 350 220 330 L210 370 Q160 380 110 370 Z" fill="url(#clayDark)" opacity="0.7"/>
+
+    <!-- Left arm -->
+    <ellipse cx="95" cy="265" rx="28" ry="45" fill="url(#clayBody)" transform="rotate(-15 95 265)"/>
+    <!-- Right arm (blessing) -->
+    <ellipse cx="225" cy="250" rx="26" ry="42" fill="url(#clayBody)" transform="rotate(20 225 250)"/>
+    <circle cx="240" cy="215" r="14" fill="url(#clayBody)"/>
+
+    <!-- Head -->
+    <circle cx="160" cy="175" r="62" fill="url(#clayHead)"/>
+
+    <!-- Ears -->
+    <ellipse cx="98" cy="175" rx="32" ry="42" fill="url(#clayBody)" transform="rotate(-8 98 175)"/>
+    <ellipse cx="222" cy="175" rx="32" ry="42" fill="url(#clayBody)" transform="rotate(8 222 175)"/>
+    <ellipse cx="98" cy="175" rx="18" ry="28" fill="url(#clayDark)" opacity="0.4" transform="rotate(-8 98 175)"/>
+    <ellipse cx="222" cy="175" rx="18" ry="28" fill="url(#clayDark)" opacity="0.4" transform="rotate(8 222 175)"/>
+
+    <!-- Crown / Mukut -->
+    <path d="M120 130 Q160 90 200 130 L195 145 Q160 120 125 145 Z" fill="url(#crownGold)"/>
+    <path d="M130 125 L160 100 L190 125" stroke="#9A7020" stroke-width="2" fill="none"/>
+    <circle cx="160" cy="108" r="6" fill="#D4A843"/>
+
+    <!-- Trunk -->
+    <path d="M160 195 Q175 220 168 250 Q160 265 152 250 Q145 220 160 195" fill="url(#clayBody)"/>
+    <path d="M160 195 Q170 215 165 240" stroke="#8B5A2B" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+    <!-- Eyes -->
+    <ellipse cx="142" cy="168" rx="7" ry="5" fill="#3E2723"/>
+    <ellipse cx="178" cy="168" rx="7" ry="5" fill="#3E2723"/>
+    <circle cx="144" cy="167" r="2" fill="#FFF8F0" opacity="0.6"/>
+    <circle cx="180" cy="167" r="2" fill="#FFF8F0" opacity="0.6"/>
+
+    <!-- Tilak -->
+    <path d="M160 148 L155 158 L165 158 Z" fill="#8B1538"/>
+    <circle cx="160" cy="155" r="3" fill="#8B1538"/>
+
+    <!-- Smile -->
+    <path d="M148 188 Q160 198 172 188" stroke="#6B3E1F" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+    <!-- Belly detail -->
+    <ellipse cx="160" cy="300" rx="30" ry="35" fill="url(#clayDark)" opacity="0.15"/>
+
+    <!-- Modak in hand -->
+    <circle cx="82" cy="240" r="12" fill="url(#clayBody)"/>
+    <path d="M76 235 Q82 228 88 235" stroke="#8B5A2B" stroke-width="1" fill="none"/>
+
+    <!-- Necklace -->
+    <path d="M125 210 Q160 235 195 210" stroke="url(#crownGold)" stroke-width="3" fill="none" opacity="0.8"/>
+  </g>
+</svg>

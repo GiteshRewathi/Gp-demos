@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none">
+  <defs>
+    <linearGradient id="potOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A0714F"/>
+      <stop offset="50%" stop-color="#8B5E3C"/>
+      <stop offset="100%" stop-color="#5C3D2E"/>
+    </linearGradient>
+    <linearGradient id="soilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4E342E"/>
+      <stop offset="100%" stop-color="#3E2723"/>
+    </linearGradient>
+    <filter id="potShadow">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#2a1a10" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <g filter="url(#potShadow)">
+    <path d="M30 35 L50 100 L230 100 L250 35 Z" fill="url(#potOuter)"/>
+    <path d="M20 35 L260 35 L250 45 L30 45 Z" fill="#9A7048"/>
+    <ellipse cx="140" cy="38" rx="118" ry="14" fill="url(#soilGrad)"/>
+    <ellipse cx="140" cy="36" rx="105" ry="8" fill="#5D4037" opacity="0.6"/>
+    <rect x="55" y="100" width="170" height="12" rx="3" fill="#4A3020"/>
+  </g>
+</svg>
